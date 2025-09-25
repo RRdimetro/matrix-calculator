@@ -1,21 +1,23 @@
 #pragma once
-typedef struct {
-double** data;
-int rows;
-int cols;
-} Matrix;
-// Указатель на двумерный массив
-// Количество строк
-// Количество столбцов
-// Базовые функции
+
+struct Matrix {
+    int rows;
+    int cols;
+    double** data;
+};
+
+// Создание и освобождение
 Matrix create_matrix(int rows, int cols);
-void free_matrix(Matrix m);
-Matrix matrix_add(Matrix a, Matrix b);
-Matrix matrix_multiply(Matrix a, Matrix b);
-Matrix matrix_transpose(Matrix m);
-// Вспомогательные функции
-void print_matrix(Matrix m);
+void free_matrix(Matrix& m);
+
+// Вывод
+void print_matrix(const Matrix& m);
+
+// Операции
+Matrix matrix_add(const Matrix& a, const Matrix& b);
+Matrix matrix_multiply(const Matrix& a, const Matrix& b);
+Matrix matrix_transpose(const Matrix& m);
 Matrix matrix_from_array(double* data, int rows, int cols);
 
-// ИНДИВИДУАЛЬНОЕ ЗАДАНИЕ: сумма элементов матрицы
-double matrix_sum(Matrix m);
+// Сравнение
+bool matrix_equals(const Matrix& a, const Matrix& b, double tolerance);

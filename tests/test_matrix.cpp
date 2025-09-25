@@ -50,4 +50,3 @@ TEST(MatrixTest, MatrixMultiplication) {
  free_matrix(B);
  free_matrix(C);
 }
-

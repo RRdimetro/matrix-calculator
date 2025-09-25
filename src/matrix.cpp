@@ -1,8 +1,9 @@
 #include "matrix.h"
 #include <iostream>
 #include <stdexcept>
+#include <cmath>
 
-// Создание матрицы заданного размера
+// Создание матрицы
 Matrix create_matrix(int rows, int cols) {
     if (rows <= 0 || cols <= 0) {
         throw std::invalid_argument("Matrix dimensions must be positive");
@@ -12,22 +13,25 @@ Matrix create_matrix(int rows, int cols) {
     mat.cols = cols;
     mat.data = new double*[rows];
     for (int i = 0; i < rows; i++) {
-        mat.data[i] = new double[cols]();  // () инициализирует нулями
+        mat.data[i] = new double[cols]();  // инициализация нулями
     }
     return mat;
 }
 
-// Освобождение памяти матрицы
-void free_matrix(Matrix m) {
+// Освобождение матрицы
+void free_matrix(Matrix& m) {
     if (m.data == nullptr) return;
     for (int i = 0; i < m.rows; i++) {
         delete[] m.data[i];
     }
     delete[] m.data;
+    m.data = nullptr;
+    m.rows = 0;
+    m.cols = 0;
 }
 
-// Печать матрицы
-void print_matrix(Matrix m) {
+// Печать
+void print_matrix(const Matrix& m) {
     if (m.data == nullptr) {
         std::cout << "[Empty matrix]" << std::endl;
         return;
@@ -42,9 +46,8 @@ void print_matrix(Matrix m) {
     }
 }
 
-// Сложение двух матриц
-Matrix matrix_add(Matrix a, Matrix b) {
-    // Проверка совпадения размеров
+// Сложение
+Matrix matrix_add(const Matrix& a, const Matrix& b) {
     if (a.rows != b.rows || a.cols != b.cols) {
         throw std::invalid_argument("Matrix dimensions must match for addition");
     }
@@ -57,9 +60,8 @@ Matrix matrix_add(Matrix a, Matrix b) {
     return result;
 }
 
-// Умножение матриц
-Matrix matrix_multiply(Matrix a, Matrix b) {
-    // Проверка совместимости размеров
+// Умножение
+Matrix matrix_multiply(const Matrix& a, const Matrix& b) {
     if (a.cols != b.rows) {
         throw std::invalid_argument("Number of columns in A must equal number of rows in B");
     }
@@ -75,8 +77,8 @@ Matrix matrix_multiply(Matrix a, Matrix b) {
     return result;
 }
 
-// Транспонирование матрицы
-Matrix matrix_transpose(Matrix m) {
+// Транспонирование
+Matrix matrix_transpose(const Matrix& m) {
     Matrix result = create_matrix(m.cols, m.rows);
     for (int i = 0; i < m.rows; i++) {
         for (int j = 0; j < m.cols; j++) {
@@ -86,7 +88,7 @@ Matrix matrix_transpose(Matrix m) {
     return result;
 }
 
-// Создание матрицы из одномерного массива
+// Создание из массива
 Matrix matrix_from_array(double* data, int rows, int cols) {
     Matrix result = create_matrix(rows, cols);
     for (int i = 0; i < rows; i++) {
@@ -97,18 +99,13 @@ Matrix matrix_from_array(double* data, int rows, int cols) {
     return result;
 }
 
-// ИНДИВИДУАЛЬНОЕ ЗАДАНИЕ: сумма всех элементов матрицы
-double matrix_sum(Matrix m) {
-    // Проверка на пустую матрицу
-    if (m.data == nullptr || m.rows <= 0 || m.cols <= 0) {
-        return 0.0;
-    }
-    double sum = 0.0;
-    // Суммируем все элементы матрицы
-    for (int i = 0; i < m.rows; i++) {
-        for (int j = 0; j < m.cols; j++) {
-            sum += m.data[i][j];
+// Равенство с точностью
+bool matrix_equals(const Matrix& a, const Matrix& b, double tolerance) {
+    if (a.rows != b.rows || a.cols != b.cols) return false;
+    for (int i = 0; i < a.rows; i++) {
+        for (int j = 0; j < a.cols; j++) {
+            if (std::fabs(a.data[i][j] - b.data[i][j]) > tolerance) return false;
         }
     }
-    return sum;
+    return true;
 }
