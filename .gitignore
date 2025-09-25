@@ -12,3 +12,4 @@ docs/latex/
 # Doxygen backup files
 Doxyfile.bak
 *.bak
+Testing/
